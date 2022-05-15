@@ -18,6 +18,10 @@ class HomePage extends GetView<HomeController> {
         floatingActionButton: DragTarget(
           builder: (_, __, ___) => Obx(() => FloatingActionButton(
                 onPressed: () {
+                  if (controller.tasks.isEmpty) {
+                    EasyLoading.showError('Please add a task type first');
+                    return;
+                  }
                   Get.to(() => AddDialog(), transition: Transition.downToUp);
                 },
                 backgroundColor:
