@@ -18,6 +18,7 @@ class TodoApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'GetX TODO',
       home: const HomePage(),
+      debugShowCheckedModeBanner: false,
       initialBinding: HomeBinding(),
       builder: EasyLoading.init(),
     );
