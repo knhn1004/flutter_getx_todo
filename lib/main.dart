@@ -9,10 +9,12 @@ import 'package:get_storage/get_storage.dart';
 void main() async {
   await GetStorage.init();
   await Get.putAsync(() => StorageService().init());
-  runApp(TodoApp());
+  runApp(const TodoApp());
 }
 
 class TodoApp extends StatelessWidget {
+  const TodoApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
