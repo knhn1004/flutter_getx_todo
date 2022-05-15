@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getx_todo/app/modules/home/controller.dart';
 import 'package:flutter_getx_todo/app/modules/home/widgets/add_card.dart';
+import 'package:flutter_getx_todo/app/modules/home/widgets/task_card.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:flutter_getx_todo/app/core/utils/extensions.dart';
 
@@ -22,12 +23,15 @@ class HomePage extends GetView<HomeController> {
           ),
         ),
       ),
-      GridView.count(
-        crossAxisCount: 2,
-        shrinkWrap: true,
-        physics: const ClampingScrollPhysics(),
-        children: [AddCard()],
-      )
+      Obx(() => GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            children: [
+              ...controller.tasks.map((task) => TaskCard(task: task)),
+              AddCard(),
+            ],
+          ))
     ])));
   }
 }
