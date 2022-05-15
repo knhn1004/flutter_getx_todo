@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_getx_todo/app/modules/home/controller.dart';
 import 'package:flutter_getx_todo/app/modules/home/widgets/add_card.dart';
+import 'package:flutter_getx_todo/app/modules/home/widgets/add_dialog.dart';
 import 'package:flutter_getx_todo/app/modules/home/widgets/task_card.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/get.dart';
 import 'package:flutter_getx_todo/app/core/utils/extensions.dart';
 
 import '../../data/models/task.dart';
@@ -16,7 +17,9 @@ class HomePage extends GetView<HomeController> {
     return Scaffold(
         floatingActionButton: DragTarget(
           builder: (_, __, ___) => Obx(() => FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(() => AddDialog(), transition: Transition.downToUp);
+                },
                 backgroundColor:
                     controller.deleting.value ? Colors.red : Colors.blue[900],
                 child:
