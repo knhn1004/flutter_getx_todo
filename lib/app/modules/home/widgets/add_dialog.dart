@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_getx_todo/app/core/utils/extensions.dart';
 import 'package:flutter_getx_todo/app/modules/home/controller.dart';
 import 'package:get/get.dart';
@@ -21,10 +22,10 @@ class AddDialog extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.close),
-                  onPressed: () => Get.back(),
+                  onPressed: handleClose,
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: handleDone,
                     style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent)),
@@ -37,7 +38,7 @@ class AddDialog extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.0.wp),
-            child: Text('New Text',
+            child: Text('New Task',
                 style: TextStyle(
                   fontSize: 20.0.sp,
                   fontWeight: FontWeight.bold,
@@ -75,29 +76,69 @@ class AddDialog extends StatelessWidget {
                   color: Colors.grey,
                 )),
           ),
-          ...homeController.tasks.map((task) => Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: 3.0.wp, horizontal: 5.0.wp),
-                child: Row(
-                  children: [
-                    Icon(
-                      IconData(
-                        task.icon,
-                        fontFamily: 'MaterialIcons',
-                      ),
-                      color: HexColor.fromHex(task.color),
+          ...homeController.tasks.map((task) => Obx(
+                () => InkWell(
+                  onTap: () => homeController.selectTask(task),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 3.0.wp, horizontal: 5.0.wp),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              IconData(
+                                task.icon,
+                                fontFamily: 'MaterialIcons',
+                              ),
+                              color: HexColor.fromHex(task.color),
+                            ),
+                            SizedBox(width: 3.0.wp),
+                            Text(task.title,
+                                style: TextStyle(
+                                  fontSize: 12.0.sp,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ],
+                        ),
+                        if (homeController.selectedTask.value == task)
+                          const Icon(Icons.check, color: Colors.blue)
+                      ],
                     ),
-                    SizedBox(width: 3.0.wp),
-                    Text(task.title,
-                        style: TextStyle(
-                          fontSize: 12.0.sp,
-                          fontWeight: FontWeight.bold,
-                        ))
-                  ],
+                  ),
                 ),
               ))
         ],
       ),
     ));
+  }
+
+  void handleClose() {
+    Get.back();
+    homeController.editController.clear();
+    homeController.selectTask(null);
+  }
+
+  void handleDone() {
+    if (!homeController.formKey.currentState!.validate()) {
+      EasyLoading.showError('Please fill out the fields');
+      return;
+    }
+    if (homeController.selectedTask.value == null) {
+      EasyLoading.showError('Please select task type');
+      return;
+    }
+    if (!homeController.updateTask(
+      homeController.selectedTask.value!,
+      homeController.editController.text,
+    )) {
+      EasyLoading.showError('Todo Item already exists');
+      return;
+    }
+    EasyLoading.showSuccess('Task Updated');
+    Get.back();
+    homeController.editController.clear();
+    homeController.selectTask(null);
   }
 }
