@@ -12,7 +12,10 @@ extension ResponsiveText on double {
 
 extension HexColor on Color {
   static Color fromHex(String hexString) {
-    return Color(int.parse(hexString.substring(1, 7), radix: 16) + 0xFF000000);
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 
   static String toHex(Color color) {
